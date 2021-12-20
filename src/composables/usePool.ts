@@ -8,6 +8,7 @@ import { configService } from '@/services/config/config.service';
 import { getAddress } from 'ethers/lib/utils';
 import { bnum } from '@/lib/utils';
 import { fNum } from './useNumbers';
+import { isMainnet } from './useNetwork';
 
 /**
  * METHODS
@@ -67,6 +68,16 @@ export function isWstETH(pool: AnyPool): boolean {
   );
 }
 
+export function isStaBAL3(pool: AnyPool): boolean {
+  if (isMainnet) {
+    return (
+      pool.id ===
+      '0x06df3b2bbb68adc8b0e302443692037ed9f91b42000000000000000000000063'
+    );
+  }
+
+  return false;
+}
 export function noInitLiquidity(pool: AnyPool): boolean {
   return bnum(pool?.onchain?.totalSupply || '0').eq(0);
 }

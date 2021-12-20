@@ -307,6 +307,7 @@
     "maximum": "Maximum",
     "minTransactionBuffer": "To ensure a smooth transaction, at least {0} {1} must be left in your wallet to pay for gas fees.",
     "menu": "Menu",
+    "migrate": "Migrate",
     "month": "month",
     "months": "months",
     "mustBeAtLeast": "must be at least {0} characters",
