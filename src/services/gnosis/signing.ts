@@ -1,4 +1,8 @@
 import { Signer } from '@ethersproject/abstract-signer';
+// @gnosis/gp-v2-contracts uses a Signer from ethers v5.4.x whereas we pass one from v5.5.x
+// They're compatible but their types are slightly different (due to different handling of resolving invalid ENS names)
+// We then cast to the older type where appropriate.
+import { Signer as OldSigner } from 'ethers';
 
 import {
   domain as domainGp,
@@ -98,7 +102,7 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
   return signOrderGp(
     domain,
     order,
-    signer,
+    signer as OldSigner,
     getSigningSchemeLibValue(signingScheme)
   );
 }
@@ -119,7 +123,7 @@ async function _signOrderCancellation(
   return signOrderCancellationGp(
     domain,
     orderId,
-    signer,
+    signer as OldSigner,
     getSigningSchemeLibValue(signingScheme)
   );
 }
@@ -140,10 +144,10 @@ async function _signPayload(
   try {
     switch (signingMethod) {
       case 'v3':
-        _signer = new TypedDataV3Signer(signer);
+        _signer = new TypedDataV3Signer(signer as OldSigner);
         break;
       case 'int_v4':
-        _signer = new IntChainIdTypedDataV4Signer(signer);
+        _signer = new IntChainIdTypedDataV4Signer(signer as OldSigner);
         break;
       default:
         _signer = signer;
