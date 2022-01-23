@@ -45,7 +45,7 @@ export interface OrderCreation extends UnsignedOrder {
   signingScheme: EcdsaSigningScheme; // value of
 }
 
-export interface SingOrderCancellationParams {
+export interface SignOrderCancellationParams {
   signer: Signer;
   orderId: string;
   signingScheme: EcdsaSigningScheme;
@@ -108,7 +108,7 @@ async function _signOrder(params: SignOrderParams): Promise<Signature> {
 }
 
 async function _signOrderCancellation(
-  params: SingOrderCancellationParams
+  params: SignOrderCancellationParams
 ): Promise<Signature> {
   const { signer, signingScheme, orderId } = params;
 
