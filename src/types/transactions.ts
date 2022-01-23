@@ -1,7 +1,7 @@
 import {
   TransactionReceipt,
   TransactionResponse
-} from '@ethersproject/abstract-provider';
+} from '@ethersproject/providers';
 import { Step } from './index';
 
 export type TransactionError = {

@@ -2,9 +2,9 @@ import axios from 'axios';
 import { chunk, flatten, groupBy } from 'lodash';
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
 import merkleOrchardAbi from '@/lib/abi/MerkleOrchard.json';
-import { ethers } from 'ethers';
 
 import { getAddress } from '@ethersproject/address';
+import { HashZero } from '@ethersproject/constants';
 
 import { networkId } from '@/composables/useNetwork';
 
@@ -289,8 +289,7 @@ export class ClaimService {
         const distributionRootResult = chunks[1] as string[];
 
         return claimedResult.filter(
-          (_, index) =>
-            distributionRootResult[index] !== ethers.constants.HashZero
+          (_, index) => distributionRootResult[index] !== HashZero
         );
       }
     } catch (e) {

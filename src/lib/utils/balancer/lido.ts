@@ -1,7 +1,8 @@
 import { configService } from '@/services/config/config.service';
 import { rpcProviderService } from '@/services/rpc-provider/rpc-provider.service';
-import { BigNumberish, Contract } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
+import { BigNumberish } from '@ethersproject/bignumber';
+import { Contract } from '@ethersproject/contracts';
 
 const {
   stETH: stEthAddress,

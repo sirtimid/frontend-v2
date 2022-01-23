@@ -8,7 +8,7 @@ import { parseUnits } from '@ethersproject/units';
 import useSlippage from '@/composables/useSlippage';
 import { usePool } from '@/composables/usePool';
 import useUserSettings from '@/composables/useUserSettings';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { TokenInfo } from '@/types/TokenList';
 import { queryBatchSwapTokensIn, SOR } from '@balancer-labs/sdk';
 import { BatchSwap } from '@/types';

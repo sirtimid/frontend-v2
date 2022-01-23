@@ -18,7 +18,7 @@ import { dateTimeLabelFor } from '@/composables/useTime';
 import { useRoute } from 'vue-router';
 import useConfig from '@/composables/useConfig';
 import { configService } from '@/services/config/config.service';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import useTokenApprovalActions from '@/composables/useTokenApprovalActions';
 import { TransactionActionInfo } from '@/types/transactions';

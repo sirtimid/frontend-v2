@@ -1,4 +1,4 @@
-import { Contract } from 'ethers';
+import { Contract } from '@ethersproject/contracts';
 import ContractService from '../balancer-contracts.service';
 import BatchRelayerAbi from '@/lib/abi/BatchRelayer.json';
 import { FundManagement, TransactionData } from '@balancer-labs/sdk';

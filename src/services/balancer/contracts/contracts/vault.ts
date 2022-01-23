@@ -1,8 +1,9 @@
 import Service from '../balancer-contracts.service';
 import { Multicaller } from '@/lib/utils/balancer/contract';
 import { getAddress } from '@ethersproject/address';
-import { formatUnits } from '@ethersproject/units';
+import { Contract } from '@ethersproject/contracts';
 import { BigNumber } from '@ethersproject/bignumber';
+import { formatUnits } from '@ethersproject/units';
 import {
   LinearPoolDataMap,
   OnchainPoolData,
@@ -23,7 +24,6 @@ import {
 import { toNormalizedWeights } from '@balancer-labs/balancer-js';
 import { pick } from 'lodash';
 import { Vault__factory } from '@balancer-labs/typechain';
-import { Contract } from 'ethers';
 import VaultAbi from '@/lib/abi/VaultAbi.json';
 import ProtocolFeesCollector from './protocol-fees-collector';
 

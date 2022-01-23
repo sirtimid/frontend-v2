@@ -1,5 +1,5 @@
 import { TransactionResponse, Web3Provider } from '@ethersproject/providers';
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import configs from '@/lib/config';
 import { configService } from '@/services/config/config.service';

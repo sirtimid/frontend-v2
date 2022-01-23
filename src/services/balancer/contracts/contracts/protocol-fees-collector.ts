@@ -1,5 +1,5 @@
 import Vault from './vault';
-import { Contract } from 'ethers';
+import { Contract } from '@ethersproject/contracts';
 import { formatUnits } from '@ethersproject/units';
 import ProtocolFeesCollectorAbi from '@/lib/abi/ProtocolFeesCollector.json';
 
