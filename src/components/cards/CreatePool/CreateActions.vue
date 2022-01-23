@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, reactive, onBeforeMount } from 'vue';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
+import { TransactionReceipt } from '@ethersproject/providers';
 import { TransactionActionInfo } from '@/types/transactions';
 
 import BalActionSteps from '@/components/_global/BalActionSteps/BalActionSteps.vue';

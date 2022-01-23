@@ -12,7 +12,7 @@ import { sendTransaction } from '@/lib/utils/balancer/web3';
 import useRelayerApprovalQuery from '../queries/useRelayerApprovalQuery';
 import { GP_RELAYER_CONTRACT_ADDRESS } from '@/services/gnosis/constants';
 import { TransactionActionInfo } from '@/types/transactions';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { TransactionResponse } from '@ethersproject/providers';
 
 const vaultAddress = configService.network.addresses.vault;
 

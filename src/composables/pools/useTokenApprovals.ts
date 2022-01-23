@@ -5,7 +5,7 @@ import useTokens from '@/composables/useTokens';
 import useEthers from '@/composables/useEthers';
 import useTransactions from '../useTransactions';
 import { MaxUint256 } from '@ethersproject/constants';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { TransactionResponse } from '@ethersproject/providers';
 import { sendTransaction } from '@/lib/utils/balancer/web3';
 import { default as ERC20ABI } from '@/lib/abi/ERC20.json';
 

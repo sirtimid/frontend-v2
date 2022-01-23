@@ -14,7 +14,7 @@ import { FullPool } from '@/services/balancer/subgraph/types';
 import {
   TransactionReceipt,
   TransactionResponse
-} from '@ethersproject/abstract-provider';
+} from '@ethersproject/providers';
 import { WithdrawMathResponse } from '../../../composables/useWithdrawMath';
 // Composables
 import useWeb3 from '@/services/web3/useWeb3';

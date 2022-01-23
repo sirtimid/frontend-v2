@@ -1,5 +1,5 @@
 import { Ref } from 'vue';
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { TransactionResponse } from '@ethersproject/providers';
 import { callStatic, sendTransaction } from '@/lib/utils/balancer/web3';
 import {
   Vault__factory,

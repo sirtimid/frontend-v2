@@ -11,7 +11,7 @@ import { ref, computed, reactive } from 'vue';
 import {
   TransactionReceipt,
   TransactionResponse
-} from '@ethersproject/abstract-provider';
+} from '@ethersproject/providers';
 import { Step, StepState } from '@/types';
 import {
   TransactionAction,
