@@ -6,7 +6,7 @@ import {
   SwapToken,
   SwapTokenType
 } from '@/services/swap/swap.service';
-import { SwapV2 } from '@balancer-labs/sor2';
+import { SwapV2 } from '@balancer-labs/sdk';
 import { BatchSwapStep } from '@balancer-labs/sdk';
 import { SwapKind } from '@balancer-labs/balancer-js';
 
