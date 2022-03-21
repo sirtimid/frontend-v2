@@ -1,7 +1,36 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+import useNumbers from '@/composables/useNumbers';
+import usePools from '@/composables/pools/usePools';
+
+import { EXTERNAL_LINKS } from '@/constants/links';
+import useFathom from '@/composables/useFathom';
+import useWeb3 from '@/services/web3/useWeb3';
+import useDarkMode from '@/composables/useDarkMode';
+
+// COMPOSABLES
+const { fNum2 } = useNumbers();
+const { isWalletReady, toggleWalletSelectModal, isWalletLoading } = useWeb3();
+const { trackGoal, Goals } = useFathom();
+const { totalInvestedAmount, isLoadingUserPools } = usePools();
+const { darkMode } = useDarkMode();
+
+const classes = computed(() => ({
+  ['h-72']: !isWalletReady.value && !isWalletLoading.value,
+  ['h-40']: isWalletReady.value || isWalletLoading.value
+}));
+
+function onClickConnect() {
+  toggleWalletSelectModal(true);
+  trackGoal(Goals.ClickHeroConnectWallet);
+}
+</script>
+
 <template>
   <div :class="['app-hero', classes]">
     <div class="w-full max-w-2xl mx-auto">
-      <template v-if="isWalletReady">
+      <template v-if="isWalletReady || isWalletLoading">
         <h1
           v-text="$t('myInvestments')"
           class="text-base font-medium text-white opacity-90 font-body mb-2"
@@ -50,61 +79,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
-
-import useNumbers from '@/composables/useNumbers';
-import usePools from '@/composables/pools/usePools';
-
-import { EXTERNAL_LINKS } from '@/constants/links';
-import useFathom from '@/composables/useFathom';
-import useWeb3 from '@/services/web3/useWeb3';
-import useDarkMode from '@/composables/useDarkMode';
-
-export default defineComponent({
-  name: 'AppHero',
-
-  setup() {
-    // COMPOSABLES
-    const { fNum2 } = useNumbers();
-    const { isWalletReady, toggleWalletSelectModal } = useWeb3();
-    const { trackGoal, Goals } = useFathom();
-    const { totalInvestedAmount, isLoadingUserPools } = usePools();
-    const { darkMode } = useDarkMode();
-
-    const classes = computed(() => ({
-      ['h-72']: !isWalletReady.value,
-      ['h-40']: isWalletReady.value
-    }));
-
-    function onClickConnect() {
-      toggleWalletSelectModal(true);
-      trackGoal(Goals.ClickHeroConnectWallet);
-    }
-
-    return {
-      // data
-      totalInvestedAmount,
-      isLoadingUserPools,
-      Goals,
-
-      // computed
-      isWalletReady,
-      classes,
-      darkMode,
-
-      // methods
-      toggleWalletSelectModal,
-      fNum2,
-      onClickConnect,
-      trackGoal,
-      // constants
-      EXTERNAL_LINKS
-    };
-  }
-});
-</script>
 
 <style>
 .app-hero {

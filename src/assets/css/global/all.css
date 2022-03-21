@@ -3,6 +3,9 @@
 @import "./backgrounds.css";
 @import "./animations.css";
 
+html {
+  overflow: scroll;
+}
 html,
 body {
   @apply font-body;

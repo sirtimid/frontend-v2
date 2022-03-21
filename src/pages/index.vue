@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -17,11 +17,14 @@ import { bnum } from '@/lib/utils';
 
 import StakedPoolsTable from '@/components/contextual/pages/pools/StakedPoolsTable.vue';
 import StakingProvider from '@/providers/staking.provider';
+import { useQuery } from 'vue-query';
+import { balancerSubgraphService } from '@/services/balancer/subgraph/balancer-subgraph.service';
+import AnimatePresence from '@/components/animate/AnimatePresence.vue';
 
 // COMPOSABLES
 const router = useRouter();
 const { t } = useI18n();
-const { isWalletReady, appNetworkConfig } = useWeb3();
+const { isWalletReady, appNetworkConfig, account, isWalletLoading } = useWeb3();
 const isElementSupported = appNetworkConfig.supportsElementPools;
 const {
   selectedTokens,
@@ -41,6 +44,25 @@ const {
 } = usePools(selectedTokens);
 const { addAlert, removeAlert } = useAlerts();
 const { upToMediumBreakpoint } = useBreakpoints();
+
+const { data: userPoolIds, isLoading: isLoadingUserPoolIds } = useQuery(
+  reactive(['pool', 'ids', 'user', { account }]),
+  async () => {
+    const poolShares = await balancerSubgraphService.poolShares.get({
+      where: {
+        userAddress: account.value.toLowerCase()
+      }
+    });
+    const poolIds = poolShares.map(poolShare => poolShare.poolId.id);
+    return poolIds;
+  }
+);
+
+const expectedUserTableHeight = computed(() =>
+  userPoolIds.value
+    ? `${(userPoolIds.value || []).length * (16 * 4.375)}px`
+    : `0px`
+);
 
 // COMPUTED
 const filteredPools = computed(() =>
@@ -100,7 +122,7 @@ function navigateToCreatePool() {
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <template v-if="isWalletReady">
+    <AnimatePresence :isVisible="!isLoadingUserPoolIds">
       <BalStack vertical>
         <div class="px-4 lg:px-0">
           <BalStack horizontal justify="between" align="center">
@@ -110,75 +132,87 @@ function navigateToCreatePool() {
             }}</BalBtn>
           </BalStack>
         </div>
-        <BalStack vertical spacing="xl">
-          <PoolsTable
-            :key="stakableUserPools"
-            :isLoading="isLoadingUserPools"
-            :data="stakableUserPools"
-            :noPoolsLabel="$t('noInvestments')"
-            :selectedTokens="selectedTokens"
-            :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
-            showPoolShares
-          />
-          <StakingProvider>
-            <StakedPoolsTable :userPools="userPools" />
-          </StakingProvider>
-          <BalStack vertical spacing="sm">
-            <h5>{{ $t('poolsToMigrate') }}</h5>
+        <AnimatePresence :isVisible="isWalletReady && !isLoadingUserPools">
+          <BalStack vertical spacing="xl">
             <PoolsTable
-              :key="migratableUserPools"
-              :isLoading="isLoadingUserPools"
-              :data="migratableUserPools"
+              :key="userPools"
+              :data="userPools"
               :noPoolsLabel="$t('noInvestments')"
-              showPoolShares
               :selectedTokens="selectedTokens"
-              :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
+              :hiddenColumns="['poolVolume', 'poolValue', 'migrate', 'stake']"
+              showPoolShares
             />
+            <StakingProvider>
+              <StakedPoolsTable :userPools="userPools" />
+            </StakingProvider>
+            <BalStack vertical spacing="sm">
+              <h5>{{ $t('poolsToMigrate') }}</h5>
+              <PoolsTable
+                :key="migratableUserPools"
+                :isLoading="isLoadingUserPools"
+                :data="migratableUserPools"
+                :noPoolsLabel="$t('noInvestments')"
+                showPoolShares
+                :selectedTokens="selectedTokens"
+                :hiddenColumns="['poolVolume', 'poolValue', 'stake']"
+              />
+            </BalStack>
           </BalStack>
-        </BalStack>
-      </BalStack>
-      <div class="mb-16" />
-    </template>
-
-    <BalStack vertical>
-      <div class="px-4 lg:px-0">
-        <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
-        <div
-          class="flex flex-col md:flex-row w-full justify-between items-end lg:items-center"
+        </AnimatePresence>
+        <AnimatePresence
+          :isVisible="isLoadingUserPools && isWalletReady"
+          unmountInstantly
         >
-          <TokenSearchInput
-            v-model="selectedTokens"
-            :loading="isLoadingPools"
-            @add="addSelectedToken"
-            @remove="removeSelectedToken"
-            class="w-full md:w-2/3"
-          />
-          <BalBtn
-            @click="navigateToCreatePool"
-            color="blue"
-            size="sm"
-            :class="{ 'mt-4': upToMediumBreakpoint }"
-            :block="upToMediumBreakpoint"
+          <BalLoadingBlock class="userPoolSkeleton" />
+        </AnimatePresence>
+      </BalStack>
+    </AnimatePresence>
+    <AnimatePresence :isVisible="!isWalletLoading && !isLoadingUserPoolIds">
+      <BalStack vertical class="mt-16">
+        <div class="px-4 lg:px-0">
+          <h3 class="mb-3">{{ $t('investmentPools') }}</h3>
+          <div
+            class="flex flex-col md:flex-row w-full justify-between items-end lg:items-center"
           >
-            {{ $t('createAPool.title') }}
-          </BalBtn>
+            <TokenSearchInput
+              v-model="selectedTokens"
+              :loading="isLoadingPools"
+              @add="addSelectedToken"
+              @remove="removeSelectedToken"
+              class="w-full md:w-2/3"
+            />
+            <BalBtn
+              @click="navigateToCreatePool"
+              color="blue"
+              size="sm"
+              :class="{ 'mt-4': upToMediumBreakpoint }"
+              :block="upToMediumBreakpoint"
+            >
+              {{ $t('createAPool.title') }}
+            </BalBtn>
+          </div>
         </div>
-      </div>
+        <PoolsTable
+          :isLoading="isLoadingPools"
+          :data="filteredPools"
+          :noPoolsLabel="$t('noPoolsFound')"
+          :isPaginated="poolsHasNextPage"
+          :isLoadingMore="poolsIsFetchingNextPage"
+          @loadMore="loadMorePools"
+          :selectedTokens="selectedTokens"
+          class="mb-8"
+        />
 
-      <PoolsTable
-        :isLoading="isLoadingPools"
-        :data="filteredPools"
-        :noPoolsLabel="$t('noPoolsFound')"
-        :isPaginated="poolsHasNextPage"
-        :isLoadingMore="poolsIsFetchingNextPage"
-        @loadMore="loadMorePools"
-        :selectedTokens="selectedTokens"
-        class="mb-8"
-      />
-
-      <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
-        <FeaturedPools />
-      </div>
-    </BalStack>
+        <div v-if="isElementSupported" class="mt-16 p-4 lg:p-0">
+          <FeaturedPools />
+        </div>
+      </BalStack>
+    </AnimatePresence>
   </div>
 </template>
+
+<style scoped>
+.userPoolSkeleton {
+  height: calc(4.5rem + v-bind(expectedUserTableHeight));
+}
+</style>
