@@ -45,7 +45,7 @@ const {
 const { addAlert, removeAlert } = useAlerts();
 const { upToMediumBreakpoint } = useBreakpoints();
 
-const { data: userPoolIds, isLoading: isLoadingUserPoolIds } = useQuery(
+const { data: userPoolIds, isLoading: isLoadingUserPoolIds, isIdle: isUserPoolsIdle } = useQuery(
   reactive(['pool', 'ids', 'user', { account }]),
   async () => {
     const poolShares = await balancerSubgraphService.poolShares.get({
@@ -106,10 +106,6 @@ const migratableUserPools = computed(() => {
   return userPools.value.filter(pool => isMigratablePool(pool));
 });
 
-const stakableUserPools = computed(() => {
-  return userPools.value.filter(pool => !isMigratablePool(pool));
-});
-
 watch(showMigrationColumn, () => console.log(showMigrationColumn.value));
 
 /**
@@ -122,7 +118,7 @@ function navigateToCreatePool() {
 
 <template>
   <div class="lg:container lg:mx-auto pt-10 md:pt-12">
-    <AnimatePresence :isVisible="!isLoadingUserPoolIds">
+    <AnimatePresence :isVisible="!isUserPoolsIdle">
       <BalStack vertical>
         <div class="px-4 lg:px-0">
           <BalStack horizontal justify="between" align="center">
